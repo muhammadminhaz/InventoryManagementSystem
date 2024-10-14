@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Invoice - Inventory Management System</title>
+    <style>
+        body {
+            background-color: #ffffff; /* Remove background color for print */
+            margin: 0;
+            padding: 20px; /* Add padding for the PDF */
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: none; /* Remove shadow for PDF */
+            padding: 20px; /* Add padding for the card */
+        }
+
+        h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        h5 {
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        p {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            color: #6c757d;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse; /* Collapse table borders */
+        }
+
+        th, td {
+            border: 1px solid #000; /* Add border for table cells */
+            padding: 10px;
+            text-align: left;
+            color: #495057;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .table-total {
+            font-weight: bold;
+            font-size: 1.25rem;
+            color: #343a40;
+            text-align: right; /* Align total to the right */
+        }
+
+        /* Signature Styles */
+        .signature-section {
+            margin-top: 50px; /* Space before signatures */
+        }
+
+        .signature {
+            width: 45%; /* Make it almost half the width */
+            text-align: center;
+            display: inline-block; /* Align side by side */
+        }
+
+        .signature-line {
+            border-top: 1px solid #000; /* Line for signature */
+            margin-top: 40px; /* Space above the line */
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h3>Invoice</h3>
+    <!-- Customer Information and Invoice Details -->
+    <div>
+        <h5>Customer Information</h5>
+        <p><strong>Name:</strong> <span th:text="${invoice.customer.name}"></span></p>
+        <p><strong>Phone:</strong> <span th:text="${invoice.customer.phone}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${invoice.customer.email}"></span></p>
+        <p><strong>Address:</strong> <span th:text="${invoice.customer.address}"></span></p>
+
+        <h5>Invoice Details</h5>
+        <p><strong>Invoice Date:</strong> <span th:text="${formattedDate}"></span></p>
+        <p><strong>Invoice Number:</strong> #<span th:text="${invoice.id}"></span></p>
+    </div>
+
+    <!-- Products Table -->
+    <h5>Product Details</h5>
+    <table>
+        <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Subtotal</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="invoiceItem : ${invoice.invoiceItems}">
+            <td th:text="${invoiceItem.product.name}"></td>
+            <td th:text="${invoiceItem.quantity}"></td>
+            <td>$<span th:text="${invoiceItem.product.price}"></span></td>
+            <td>$<span th:text="${invoiceItem.subtotal}"></span></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Total Amount -->
+    <div>
+        <p class="table-total">Total Amount: $<span th:text="${invoice.totalAmount}"></span></p>
+    </div>
+
+    <!-- Signature Section -->
+    <div class="signature-section">
+        <div class="signature">
+            <div class="signature-line"></div>
+            <p>Customer Signature</p>
+        </div>
+        <div class="signature">
+            <div class="signature-line"></div>
+            <p>Shop Signature</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

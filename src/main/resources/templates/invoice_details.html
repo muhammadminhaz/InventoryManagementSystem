@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Invoice - Inventory Management System</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f7f7f7;
+        }
+
+        .container {
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background: linear-gradient(to right, #007bff, #00d4ff);
+            color: #fff;
+            padding: 20px;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        .card-body {
+            padding: 30px;
+            background-color: #ffffff;
+        }
+
+        .card-footer {
+            background-color: #f1f1f1;
+            padding: 20px;
+            text-align: right;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
+
+        h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        h5 {
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        p {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            color: #6c757d;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            font-size: 1rem;
+        }
+
+        td {
+            padding: 10px;
+            font-size: 1rem;
+            color: #495057;
+        }
+
+        .table-total {
+            font-weight: bold;
+            font-size: 1.25rem;
+            color: #343a40;
+        }
+
+        /* Styling for the printable content */
+        @media print {
+            body {
+                background-color: #ffffff; /* Remove background color for print */
+            }
+            .no-print {
+                display: none;
+            }
+            .card {
+                box-shadow: none;
+                margin: 0; /* Prevent margins for printing */
+            }
+        }
+
+        /* Button Customizations */
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card" id="invoice-section">
+        <div class="card-header text-center">
+            <h3>Invoice</h3>
+        </div>
+        <div class="card-body">
+            <!-- Customer Information and Invoice Details -->
+            <div class="row mb-3"> <!-- Reduced margin-bottom from mb-4 to mb-2 -->
+                <div class="col-md-6" style="padding-right: 5px;"> <!-- Reduced padding -->
+                    <h5 style="font-size: 1.3rem;">Customer Information</h5> <!-- Adjust font size -->
+                    <p style="margin: 5px;"><strong>Name:</strong> <span th:text="${invoice.customer.name}"></span></p>
+                    <p style="margin: 5px;"><strong>Phone:</strong> <span th:text="${invoice.customer.phone}"></span></p>
+                    <p style="margin: 5px;"><strong>Email:</strong> <span th:text="${invoice.customer.email}"></span></p>
+                    <p style="margin: 5px;"><strong>Address:</strong> <span th:text="${invoice.customer.address}"></span></p>
+                </div>
+                <div class="col-md-6 text-right" style="padding-left: 5px;"> <!-- Reduced padding -->
+                    <h5 style="font-size: 1.3rem;">Invoice Details</h5> <!-- Adjust font size -->
+                    <p style="margin: 5px;"><strong>Invoice Date:</strong> <span th:text="${formattedDate}"></span></p>
+                    <p style="margin: 5px;"><strong>Invoice Number:</strong> #<span th:text="${invoice.id}"></span></p>
+                </div>
+            </div>
+
+
+            <!-- Products Table -->
+            <h5>Product Details</h5>
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Subtotal</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="invoiceItem : ${invoice.invoiceItems}">
+                    <td th:text="${invoiceItem.product.name}"></td>
+                    <td th:text="${invoiceItem.quantity}"></td>
+                    <td>৳<span th:text="${invoiceItem.product.price}"></span></td>
+                    <td>৳<span th:text="${invoiceItem.subtotal}"></span></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- Total Amount -->
+            <div class="text-right mt-4">
+                <p class="table-total">Total Amount: ৳<span th:text="${invoice.totalAmount}"></span></p>
+            </div>
+        </div>
+        <div class="card-footer no-print">
+            <button class="btn btn-secondary" onclick="location.href='/invoices/list'">Back to Invoices</button>
+            <button class="btn btn-primary" onclick="printInvoice()">Preview & Print</button>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    function printInvoice() {
+        const printContents = document.getElementById('invoice-section').innerHTML;
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write('<html><head><title>Print Invoice</title>');
+        printWindow.document.write('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">');
+        printWindow.document.write(`
+            <style>
+                body {
+                    background-color: #ffffff; /* Remove background color for print */
+                }
+                .card {
+                    box-shadow: none;
+                    margin: 0; /* Prevent margins for printing */
+                }
+                .table-total {
+                    font-weight: bold;
+                }
+
+                @media print {
+                    .no-print {
+                        display: none;
+                    }
+                }
+            </style>
+        `);
+        printWindow.document.write('</head><body>');
+        printWindow.document.write(printContents);
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.onload = function() {
+            printWindow.print();
+            printWindow.close();
+        };
+    }
+</script>
+</body>
+</html>

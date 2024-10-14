@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title th:text="${product != null ? 'Edit Product' : 'Add Product'}">Product Form</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 th:text="${product != null ? 'Edit Product' : 'Add Product'}"></h1>
+
+    <!-- Form for adding a new product -->
+    <form th:if="${product == null}" th:action="@{/products}" method="post">
+        <div class="form-group">
+            <label for="name">Product Name</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Product Description</label>
+            <input type="text" class="form-control" id="description" name="description">
+        </div>
+        <div class="form-group">
+            <label for="colour">Product Colour</label>
+            <input type="text" class="form-control" id="colour" name="colour">
+        </div>
+        <div class="form-group">
+            <label for="size">Product Size</label>
+            <input type="text" class="form-control" id="size" name="size">
+        </div>
+        <div class="form-group">
+            <label for="price">Price</label>
+            <input type="number" class="form-control" id="price" name="price" step="0.01" required>
+        </div>
+        <div class="form-group">
+            <label for="quantity">Quantity</label>
+            <input type="number" class="form-control" id="quantity" name="quantity" min="1" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Product</button>
+        <a href="/products/list" class="btn btn-secondary">Cancel</a>
+    </form>
+
+    <!-- Form for editing an existing product -->
+    <form th:if="${product != null}" th:action="@{'/products/' + ${product.id} + '/update'}" method="post">
+        <input type="hidden" name="_method" value="put"/> <!-- Simulating PUT request for update -->
+        <div class="form-group">
+            <label for="name">Product Name</label>
+            <input type="text" class="form-control" id="name" name="name" th:value="${product.name}" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Product Description</label>
+            <input type="text" class="form-control" id="description" name="description" th:value="${product.description}">
+        </div>
+        <div class="form-group">
+            <label for="colour">Product Colour</label>
+            <input type="text" class="form-control" id="colour" name="colour" th:value="${product.colour}">
+        </div>
+        <div class="form-group">
+            <label for="size">Product Size</label>
+            <input type="text" class="form-control" id="size" name="size" th:value="${product.size}">
+        </div>
+        <div class="form-group">
+            <label for="price">Price</label>
+            <input type="number" class="form-control" id="price" name="price" th:value="${product.price}" step="0.01" required>
+        </div>
+        <div class="form-group">
+            <label for="quantity">Quantity</label>
+            <input type="number" class="form-control" id="quantity" name="quantity" th:value="${product.quantity}" min="1" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Product</button>
+        <a href="/products/list" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

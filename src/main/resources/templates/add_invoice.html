@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Add Invoice - Inventory Management System</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .card-header {
+            background-color: #343a40;
+            color: #fff;
+        }
+
+        .product-row {
+            margin-bottom: 15px;
+        }
+
+        .btn-custom {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+
+        .btn {
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .btn:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .material-icons {
+            vertical-align: middle; /* Align the icon vertically in the middle */
+        }
+
+        .no-products {
+            text-align: center; /* Center the text */
+            color: #6c757d; /* Gray color */
+            font-style: italic; /* Italicize the text */
+        }
+
+        /* Equal column widths */
+        .table th, .table td {
+            width: 25%; /* Adjust the width as necessary */
+            text-align: center; /* Center text in the columns */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h3>Add Invoice</h3>
+        </div>
+        <div class="card-body">
+            <form id="invoiceForm" method="post" th:action="@{/invoices/create_invoice}">
+                <div class="form-group">
+                    <label for="customerName">Customer Name</label>
+                    <input type="text" class="form-control" id="customerName" name="customer.name" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerPhone">Customer Phone</label>
+                    <input type="text" class="form-control" id="customerPhone" name="customer.phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerEmail">Customer Email</label>
+                    <input type="email" class="form-control" id="customerEmail" name="customer.email" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerAddress">Customer Address</label>
+                    <textarea class="form-control" id="customerAddress" name="customer.address" rows="3" required></textarea>
+                </div>
+
+                <h5>Products</h5>
+                <div id="productList">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Select Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="product-row">
+                            <td>
+                                <select class="form-control productSelect" name="invoiceItems[0].product.id" required>
+                                    <option value="" disabled selected>Select a product</option>
+                                    <option th:each="product : ${products}" th:value="${product.id}" th:text="${product.name}" th:data-price="${product.price}"></option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control quantity" name="invoiceItems[0].quantity" min="1" value="1" required>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control subtotal" name="invoiceItems[0].subtotal" step="0.01" readonly>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger remove-product">
+                                    <i class="material-icons">remove_circle</i> Remove Product
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="no-products" style="display: none;">
+                            <td colspan="4">No Products Added</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" class="btn btn-primary" id="addProduct">
+                    <i class="material-icons">add_circle</i> Add Product
+                </button>
+
+                <hr>
+                <h5>Total Amount: $<span id="totalAmount">0.00</span></h5>
+                <button type="submit" class="btn btn-custom">Create Invoice</button>
+                <a href="/invoices/list" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const products = /*[[${products}]]*/ [];
+    /*]]>*/
+</script>
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Custom script for handling dynamic product rows and total amount calculation -->
+<script>
+    $(document).ready(function () {
+        // Function to update total amount
+        function updateTotal() {
+            let total = 0;
+            let productCount = 0; // Keep track of the number of products
+
+            $('.product-row').each(function () {
+                const price = parseFloat($(this).find('.subtotal').val()) || 0;
+                total += price;
+                productCount++;
+            });
+
+            $('#totalAmount').text(total.toFixed(2));
+            toggleNoProductsMessage(productCount);
+        }
+
+        // Function to toggle the "No Products Added" message
+        function toggleNoProductsMessage(count) {
+            if (count === 0) {
+                $('.no-products').show();
+            } else {
+                $('.no-products').hide();
+            }
+        }
+
+        let productCount = 1; // Start counting products from 1
+
+        // Add product row
+        $('#addProduct').click(function () {
+            const newProductRow = `
+        <tr class="product-row">
+            <td>
+                <select class="form-control productSelect" name="invoiceItems[${productCount}].product.id" required>
+                    <option value="" disabled selected>Select a product</option>
+                    ${products.map(product => `
+                        <option value="${product.id}" data-price="${product.price}">${product.name}</option>
+                    `).join('')}
+                </select>
+            </td>
+            <td>
+                <input type="number" class="form-control quantity" name="invoiceItems[${productCount}].quantity" min="1" value="1" required>
+            </td>
+            <td>
+                <input type="number" class="form-control subtotal" name="invoiceItems[${productCount}].subtotal" step="0.01" readonly>
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger remove-product">
+                    <i class="material-icons">remove_circle</i> Remove Product
+                </button>
+            </td>
+        </tr>
+    `;
+            $('#productList tbody').append(newProductRow);
+            productCount++; // Increment the product count
+            toggleNoProductsMessage($('#productList tbody .product-row').length);
+        });
+
+
+        // Remove product row
+        $(document).on('click', '.remove-product', function () {
+            $(this).closest('.product-row').remove();
+            updateTotal(); // Update total when a product is removed
+            toggleNoProductsMessage($('#productList tbody .product-row').length);
+        });
+
+        // Populate price and set default quantity when product is selected
+        $(document).on('change', '.productSelect', function () {
+            const row = $(this).closest('.product-row');
+            const price = parseFloat($(this).find('option:selected').data('price')) || 0;
+            row.find('.subtotal').val(price);
+            row.find('.quantity').val(1); // Set default quantity to 1
+            updateTotal();
+        });
+
+        // Update total when quantity changes
+        $(document).on('change', '.quantity', function () {
+            const row = $(this).closest('.product-row');
+            const price = parseFloat(row.find('.subtotal').val()) || 0; // Get the price for the current row
+            const quantity = parseFloat($(this).val()) || 0; // Get the current quantity
+            const updatedPrice = (price * quantity).toFixed(2); // Calculate the updated price based on quantity
+            row.find('.subtotal').val(updatedPrice); // Update the price input
+            updateTotal(); // Recalculate the total
+        });
+
+        // Initially check if there are no products added
+        toggleNoProductsMessage($('#productList tbody .product-row').length);
+    });
+</script>
+</body>
+</html>

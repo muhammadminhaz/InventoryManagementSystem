@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Dashboard - Inventory Management System</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- Font Awesome -->
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Ensure the body takes the full height */
+            background-color: #f8f9fa; /* Light background color */
+        }
+        .container {
+            flex: 1; /* Allow the container to grow and fill the space */
+        }
+        .card {
+            margin: 10px 0; /* Space between cards */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            border-radius: 15px; /* Rounded corners for cards */
+        }
+        .btn-custom {
+            border-radius: 25px; /* Rounded corners for buttons */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow effect for buttons */
+            transition: all 0.3s ease; /* Smooth transition */
+        }
+        .btn-custom:hover {
+            transform: translateY(-2px); /* Raise button on hover */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Deeper shadow on hover */
+        }
+        #salesChart {
+            border: 1px solid #ced4da; /* Border around the chart */
+            border-radius: 10px; /* Rounded corners */
+            background-color: #ffffff; /* White background for the chart */
+            padding: 20px; /* Padding inside the chart area */
+            height: calc(100vh - 300px); /* Adjust height to fill space before footer */
+        }
+        footer {
+            margin-top: 20px;
+            padding: 10px 0;
+            text-align: center;
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-4">Dashboard</h1>
+
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <button class="btn btn-primary btn-custom" onclick="location.href='/products/list'">
+                        <i class="fas fa-list"></i> Product List
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <button class="btn btn-primary btn-custom" onclick="location.href='/invoices/list'">
+                        <i class="fas fa-list"></i> Invoice List
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <button class="btn btn-success btn-custom" onclick="location.href='/invoices/add'">
+                        <i class="fas fa-plus"></i> Create Invoice
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <button class="btn btn-success btn-custom" onclick="location.href='/products/add'">
+                        <i class="fas fa-plus"></i> Add Product
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="salesChart"></div>
+</div>
+
+<footer>
+    <p>&copy; 2024 Inventory Management System. All rights reserved.</p>
+</footer>
+
+<script>
+    // Sample data from the model (replace with actual values)
+    const salesData = /*[[${salesData}]]*/ [1500, 2300, 1800, 3000, 2500, 4000];
+    const dates = /*[[${dates}]]*/ ['2024-10-01', '2024-10-02', '2024-10-03', '2024-10-04', '2024-10-05', '2024-10-06'];
+
+    Highcharts.chart('salesChart', {
+        chart: {
+            type: 'spline' // Change to spline chart
+        },
+        title: {
+            text: 'Total Sales Over Time'
+        },
+        xAxis: {
+            categories: dates,
+            title: {
+                text: 'Date'
+            }
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Total Sales ($)'
+            }
+        },
+        series: [{
+            name: 'Sales',
+            data: salesData,
+            marker: {
+                enabled: true // Show markers
+            },
+            lineWidth: 3, // Set line width for better visibility
+            color: '#003366', // Deep blue color
+            shadow: {
+                color: 'rgba(0, 0, 0, 0.5)', // Darker shadow color for better visibility
+                width: 10, // Increase shadow width
+                offsetX: 20, // Increase horizontal shadow offset for longer shadow
+                offsetY: 20  // Increase vertical shadow offset for longer shadow
+            }
+        }]
+    });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
