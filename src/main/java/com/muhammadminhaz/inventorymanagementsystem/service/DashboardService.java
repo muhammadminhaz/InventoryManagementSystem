@@ -20,6 +20,7 @@ public class DashboardService {
     public Map<String, Object> salesData() {
         List<Invoice> invoices = invoiceService.getAllInvoices();
 
+        invoices.sort(Comparator.comparing(Invoice::getDate));
         List<Double> sales = invoices.stream()
                 .map(Invoice::getTotalAmount)
                 .toList();

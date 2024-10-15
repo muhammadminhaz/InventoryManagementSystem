@@ -104,13 +104,24 @@
 </script>
 
 <script>
-    const data = salesData.map((sales, index) => {
+    // Sum sales by date
+    const salesByDate = {};
+
+    // Aggregate sales for each date
+    salesData.forEach((sales, index) => {
+        const date = new Date(dates[index]).toISOString().split('T')[0]; // Get the date part in YYYY-MM-DD format
+        salesByDate[date] = (salesByDate[date] || 0) + sales; // Sum the sales for the date
+    });
+
+    // Prepare data for Highcharts
+    const data = Object.entries(salesByDate).map(([date, totalSales]) => {
         return {
-            x: new Date(dates[index]).getTime(),
-            y: sales
+            x: new Date(date).getTime(), // Use the date as a timestamp
+            y: totalSales
         };
     });
-    console.log(data)
+
+    // Create the chart
     Highcharts.chart('salesChart', {
         chart: {
             type: 'spline' // Change to spline chart
@@ -119,18 +130,18 @@
             text: 'Total Sales Over Time'
         },
         xAxis: {
+            type: 'datetime',
             title: {
                 text: 'Date'
             },
-            type: 'datetime', // Set xAxis type to datetime
             dateTimeLabelFormats: {
-                day: '%e %b, %Y', // Format to "14 Oct, 2024"
-                month: '%b %Y', // Format for months
-                year: '%Y' // Format for years
+                day: '%e %b, %Y',
+                month: '%b %Y',
+                year: '%Y'
             },
             labels: {
                 formatter: function () {
-                    return Highcharts.dateFormat('%e %b, %Y', this.value); // Format each label on the x-axis
+                    return Highcharts.dateFormat('%e %b, %Y', this.value); // Format the label
                 }
             }
         },
@@ -142,31 +153,30 @@
         },
         tooltip: {
             formatter: function () {
-                // Convert UTC time to GMT+6
-                const localDate = new Date(this.x + 6 * 60 * 60 * 1000); // Add 6 hours in milliseconds
-                return Highcharts.dateFormat('%e %b, %Y %I:%M %p', localDate.getTime()) + '<br/>' + // Format for tooltip
-                    'Sales: ৳' + this.y; // Show sales amount
+                const localDate = new Date(this.x + 6 * 60 * 60 * 1000); // Convert to local time
+                return Highcharts.dateFormat('%e %b, %Y', localDate.getTime()) + '<br/>' +
+                    'Total Sales: ৳' + this.y; // Show summed sales amount
             }
         },
         series: [{
             name: 'Sales',
-            data: salesData.map((sales, index) => [new Date(dates[index]).getTime(), sales]), // Combine sales and dates
+            data: data, // Use summed data
             marker: {
-                enabled: true // Show markers
+                enabled: true
             },
-            lineWidth: 3, // Set line width for better visibility
-            color: '#003366', // Deep blue color
+            lineWidth: 3,
+            color: '#003366',
             shadow: {
-                color: 'rgba(0, 0, 0, 0.5)', // Darker shadow color for better visibility
-                width: 10, // Increase shadow width
-                offsetX: 20, // Increase horizontal shadow offset for longer shadow
-                offsetY: 20  // Increase vertical shadow offset for longer shadow
+                color: 'rgba(0, 0, 0, 0.5)',
+                width: 10,
+                offsetX: 20,
+                offsetY: 20
             }
         }]
     });
-
-
 </script>
+
+
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
