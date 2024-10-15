@@ -104,7 +104,7 @@ public class InvoiceService {
 
 
     @Transactional
-    public Invoice saveInvoiceWithItems(Long customerId, List<InvoiceItem> invoiceItems) {
+    public Invoice saveInvoiceWithItems(Long customerId, List<InvoiceItem> invoiceItems, Double discountAmount) {
         // Fetch the existing customer, or create a new one
         Customer customer = customerDAO.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
@@ -115,20 +115,16 @@ public class InvoiceService {
         invoice.setDate(LocalDateTime.now()); // Set current date, or any other logic
         invoice.setTotalAmount(0.0); // Initialize to zero, will update later
 
-        // Process each InvoiceItem
         for (InvoiceItem item : invoiceItems) {
-            // Fetch product or create it if necessary
             Product product = productDAO.findById(item.getProduct().getId())
                     .orElseThrow(() -> new RuntimeException("Product not found"));
 
             InvoiceItem invoiceItem = new InvoiceItem();
             invoiceItem.setProduct(product);
             invoiceItem.setQuantity(item.getQuantity());
+            product.setQuantity(product.getQuantity() - item.getQuantity());
+            invoiceItem.setSubtotal((product.getPrice() * item.getQuantity()));
 
-            // Calculate subtotal
-            invoiceItem.setSubtotal(product.getPrice() * item.getQuantity());
-
-            // Add the InvoiceItem to the Invoice
             invoice.addInvoiceItem(invoiceItem);
         }
 
@@ -137,8 +133,12 @@ public class InvoiceService {
         for (InvoiceItem invoiceItem : invoiceItems) {
             totalAmount += invoiceItem.getSubtotal();
         }
-        invoice.setTotalAmount(totalAmount);
+        if (discountAmount != null) {
+            totalAmount -= discountAmount;
+        }
 
+        invoice.setTotalAmount(totalAmount);
+        invoice.setDiscountAmount(discountAmount);
         return invoiceDAO.save(invoice);
     }
 

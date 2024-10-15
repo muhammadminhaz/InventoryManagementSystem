@@ -96,12 +96,21 @@
 <footer>
     <p>&copy; 2024 Inventory Management System. All rights reserved.</p>
 </footer>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const salesData = /*[[${salesData}]]*/ [];
+    const dates = /*[[${dates}]]*/ [];
+    /*]]>*/
+</script>
 
 <script>
-    // Sample data from the model (replace with actual values)
-    const salesData = /*[[${salesData}]]*/ [1500, 2300, 1800, 3000, 2500, 4000];
-    const dates = /*[[${dates}]]*/ ['2024-10-01', '2024-10-02', '2024-10-03', '2024-10-04', '2024-10-05', '2024-10-06'];
-
+    const data = salesData.map((sales, index) => {
+        return {
+            x: new Date(dates[index]).getTime(),
+            y: sales
+        };
+    });
+    console.log(data)
     Highcharts.chart('salesChart', {
         chart: {
             type: 'spline' // Change to spline chart
@@ -110,20 +119,38 @@
             text: 'Total Sales Over Time'
         },
         xAxis: {
-            categories: dates,
             title: {
                 text: 'Date'
+            },
+            type: 'datetime', // Set xAxis type to datetime
+            dateTimeLabelFormats: {
+                day: '%e %b, %Y', // Format to "14 Oct, 2024"
+                month: '%b %Y', // Format for months
+                year: '%Y' // Format for years
+            },
+            labels: {
+                formatter: function () {
+                    return Highcharts.dateFormat('%e %b, %Y', this.value); // Format each label on the x-axis
+                }
             }
         },
         yAxis: {
             min: 0,
             title: {
-                text: 'Total Sales ($)'
+                text: 'Total Sales (৳)'
+            }
+        },
+        tooltip: {
+            formatter: function () {
+                // Convert UTC time to GMT+6
+                const localDate = new Date(this.x + 6 * 60 * 60 * 1000); // Add 6 hours in milliseconds
+                return Highcharts.dateFormat('%e %b, %Y %I:%M %p', localDate.getTime()) + '<br/>' + // Format for tooltip
+                    'Sales: ৳' + this.y; // Show sales amount
             }
         },
         series: [{
             name: 'Sales',
-            data: salesData,
+            data: salesData.map((sales, index) => [new Date(dates[index]).getTime(), sales]), // Combine sales and dates
             marker: {
                 enabled: true // Show markers
             },
@@ -137,6 +164,8 @@
             }
         }]
     });
+
+
 </script>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

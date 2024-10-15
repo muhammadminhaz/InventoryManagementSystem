@@ -16,6 +16,9 @@ public class Invoice {
     @Column(name = "total_amount")
     private Double totalAmount;
 
+    @Column(name = "discount_amount")
+    private Double discountAmount;
+
     @Column(name = "date")
     private LocalDateTime date;
 
@@ -74,6 +77,14 @@ public class Invoice {
     public void removeInvoiceItem(InvoiceItem invoiceItem) {
         invoiceItems.remove(invoiceItem);
         invoiceItem.setInvoice(null); // Clear the back-reference
+    }
+
+    public Double getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(Double discountAmount) {
+        this.discountAmount = discountAmount;
     }
 
 }

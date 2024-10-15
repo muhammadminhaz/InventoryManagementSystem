@@ -21,6 +21,10 @@ public class Product {
     @Column(name = "colour")
     private String colour;
 
+    @Column(name = "cost", nullable = false)
+    @Min(value = 0)
+    private Double cost;
+
     @Column(name = "price", nullable = false)
     @Min(value = 0)
     private Double price;
@@ -54,6 +58,14 @@ public class Product {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public Double getCost() {
+        return cost;
+    }
+
+    public void setCost(Double cost) {
+        this.cost = cost;
     }
 
     public String getColour() {

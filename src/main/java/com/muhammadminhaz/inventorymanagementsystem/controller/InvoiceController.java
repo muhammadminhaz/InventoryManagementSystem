@@ -78,7 +78,7 @@ public class InvoiceController {
         }
         invoice.setCustomer(customer);
 
-        Invoice savedInvoice = invoiceService.saveInvoiceWithItems(customer.getId(), invoice.getInvoiceItems());
+        Invoice savedInvoice = invoiceService.saveInvoiceWithItems(customer.getId(), invoice.getInvoiceItems(), invoice.getDiscountAmount());
 
         model.addAttribute("invoice", invoice);
         return "redirect:/invoices/" + savedInvoice.getId() + "/details";

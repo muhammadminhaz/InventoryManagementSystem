@@ -47,19 +47,18 @@
         }
 
         .material-icons {
-            vertical-align: middle; /* Align the icon vertically in the middle */
+            vertical-align: middle;
         }
 
         .no-products {
-            text-align: center; /* Center the text */
-            color: #6c757d; /* Gray color */
-            font-style: italic; /* Italicize the text */
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
         }
 
-        /* Equal column widths */
         .table th, .table td {
-            width: 25%; /* Adjust the width as necessary */
-            text-align: center; /* Center text in the columns */
+            width: 25%;
+            text-align: center;
         }
     </style>
 </head>
@@ -104,7 +103,11 @@
                             <td>
                                 <select class="form-control productSelect" name="invoiceItems[0].product.id" required>
                                     <option value="" disabled selected>Select a product</option>
-                                    <option th:each="product : ${products}" th:value="${product.id}" th:text="${product.name}" th:data-price="${product.price}"></option>
+                                    <option th:each="product : ${products}"
+                                            th:value="${product.id}"
+                                            th:text="${product.name} + ' (' + ${product.colour} + ', ' + ${product.size} + ')'"
+                                            th:data-price="${product.price}">
+                                    </option>
                                 </select>
                             </td>
                             <td>
@@ -130,13 +133,21 @@
                 </button>
 
                 <hr>
-                <h5>Total Amount: $<span id="totalAmount">0.00</span></h5>
+
+                <!-- Discount Field -->
+                <div class="form-group">
+                    <label for="discountAmount">Discount</label>
+                    <input type="number" class="form-control" id="discountAmount" name="discountAmount" min="0" step="0.01" value="0">
+                </div>
+
+                <h5>Total Amount: ৳<span id="totalAmount">0.00</span></h5>
                 <button type="submit" class="btn btn-custom">Create Invoice</button>
                 <a href="/invoices/list" class="btn btn-secondary">Cancel</a>
             </form>
         </div>
     </div>
 </div>
+
 <script th:inline="javascript">
     /*<![CDATA[*/
     const products = /*[[${products}]]*/ [];
@@ -150,7 +161,6 @@
 <!-- Custom script for handling dynamic product rows and total amount calculation -->
 <script>
     $(document).ready(function () {
-        // Function to update total amount
         function updateTotal() {
             let total = 0;
             let productCount = 0; // Keep track of the number of products
@@ -161,11 +171,13 @@
                 productCount++;
             });
 
+            const discount = parseFloat($('#discountAmount').val()) || 0; // Get the discount value
+            total = total - discount; // Subtract the discount from the total
+
             $('#totalAmount').text(total.toFixed(2));
             toggleNoProductsMessage(productCount);
         }
 
-        // Function to toggle the "No Products Added" message
         function toggleNoProductsMessage(count) {
             if (count === 0) {
                 $('.no-products').show();
@@ -176,45 +188,41 @@
 
         let productCount = 1; // Start counting products from 1
 
-        // Add product row
         $('#addProduct').click(function () {
             const newProductRow = `
-        <tr class="product-row">
-            <td>
-                <select class="form-control productSelect" name="invoiceItems[${productCount}].product.id" required>
-                    <option value="" disabled selected>Select a product</option>
-                    ${products.map(product => `
-                        <option value="${product.id}" data-price="${product.price}">${product.name}</option>
-                    `).join('')}
-                </select>
-            </td>
-            <td>
-                <input type="number" class="form-control quantity" name="invoiceItems[${productCount}].quantity" min="1" value="1" required>
-            </td>
-            <td>
-                <input type="number" class="form-control subtotal" name="invoiceItems[${productCount}].subtotal" step="0.01" readonly>
-            </td>
-            <td>
-                <button type="button" class="btn btn-danger remove-product">
-                    <i class="material-icons">remove_circle</i> Remove Product
-                </button>
-            </td>
-        </tr>
-    `;
+            <tr class="product-row">
+                <td>
+                    <select class="form-control productSelect" name="invoiceItems[${productCount}].product.id" required>
+                        <option value="" disabled selected>Select a product</option>
+                        ${products.map(product => `
+                            <option value="${product.id}" data-price="${product.price}">${product.name}</option>
+                        `).join('')}
+                    </select>
+                </td>
+                <td>
+                    <input type="number" class="form-control quantity" name="invoiceItems[${productCount}].quantity" min="1" value="1" required>
+                </td>
+                <td>
+                    <input type="number" class="form-control subtotal" name="invoiceItems[${productCount}].subtotal" step="0.01" readonly>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger remove-product">
+                        <i class="material-icons">remove_circle</i> Remove Product
+                    </button>
+                </td>
+            </tr>
+            `;
             $('#productList tbody').append(newProductRow);
-            productCount++; // Increment the product count
+            productCount++;
             toggleNoProductsMessage($('#productList tbody .product-row').length);
         });
 
-
-        // Remove product row
         $(document).on('click', '.remove-product', function () {
             $(this).closest('.product-row').remove();
-            updateTotal(); // Update total when a product is removed
+            updateTotal();
             toggleNoProductsMessage($('#productList tbody .product-row').length);
         });
 
-        // Populate price and set default quantity when product is selected
         $(document).on('change', '.productSelect', function () {
             const row = $(this).closest('.product-row');
             const price = parseFloat($(this).find('option:selected').data('price')) || 0;
@@ -223,17 +231,19 @@
             updateTotal();
         });
 
-        // Update total when quantity changes
         $(document).on('change', '.quantity', function () {
             const row = $(this).closest('.product-row');
-            const price = parseFloat(row.find('.subtotal').val()) || 0; // Get the price for the current row
-            const quantity = parseFloat($(this).val()) || 0; // Get the current quantity
-            const updatedPrice = (price * quantity).toFixed(2); // Calculate the updated price based on quantity
-            row.find('.subtotal').val(updatedPrice); // Update the price input
-            updateTotal(); // Recalculate the total
+            const price = parseFloat(row.find('.subtotal').val()) || 0;
+            const quantity = parseFloat($(this).val()) || 0;
+            const updatedPrice = (price * quantity).toFixed(2);
+            row.find('.subtotal').val(updatedPrice);
+            updateTotal();
         });
 
-        // Initially check if there are no products added
+        $('#discountAmount').on('input', function() {
+            updateTotal();
+        });
+
         toggleNoProductsMessage($('#productList tbody .product-row').length);
     });
 </script>

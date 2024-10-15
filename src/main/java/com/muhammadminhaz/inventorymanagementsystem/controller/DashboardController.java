@@ -1,21 +1,31 @@
 package com.muhammadminhaz.inventorymanagementsystem.controller;
 
+import com.muhammadminhaz.inventorymanagementsystem.service.DashboardService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.Date;
+import java.util.Map;
+
 @Controller
 public class DashboardController {
 
+    private final DashboardService dashboardService;
+
+    public DashboardController(DashboardService dashboardService) {
+        this.dashboardService = dashboardService;
+    }
+
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        // Sample data for Highcharts (replace with actual data from your service)
-        int[] salesData = {1500, 2300, 1800, 3000, 2500, 4000}; // Example sales data
-        String[] dates = {"2024-10-01", "2024-10-02", "2024-10-03", "2024-10-04", "2024-10-05", "2024-10-06"}; // Example dates
+        Map<String, Object> salesData = dashboardService.salesData();
+        Object sales = salesData.get("sales");
+        Object dates = salesData.get("dates");
 
-        model.addAttribute("salesData", salesData);
+        model.addAttribute("salesData", sales);
         model.addAttribute("dates", dates);
 
-        return "dashboard"; // This will return the dashboard.html
+        return "dashboard";
     }
 }
