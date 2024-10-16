@@ -13,8 +13,22 @@
             min-height: 100vh; /* Ensure the body takes the full height */
             background-color: #f8f9fa; /* Light background color */
         }
+        .bg {
+            position: absolute; /* Positioning */
+            top: 0; /* Align to top */
+            left: 0; /* Align to left */
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            z-index: -1; /* Send background to back */
+            background-size: cover; /* Cover the entire page */
+            background-position: center; /* Center the image */
+            opacity: 0.8; /* Optional: adjust opacity for better content visibility */
+        }
+
         .container {
             flex: 1; /* Allow the container to grow and fill the space */
+            padding: 20px; /* Add padding inside the container */
+            position: relative; /* Ensure the container is positioned relative for the background */
         }
         .card {
             margin: 10px 0; /* Space between cards */
@@ -48,8 +62,9 @@
     <script src="https://code.highcharts.com/highcharts.js"></script>
 </head>
 <body>
+<div class="bg"></div>
 <div class="container">
-    <h1 class="mt-4">Dashboard</h1>
+    <h1 style="color: #ced4da" class="mt-4">Dashboard</h1>
 
     <div class="row mb-3">
         <div class="col-md-3">
@@ -176,7 +191,24 @@
     });
 </script>
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.birds.min.js"></script>
+<script>
+    var setVanta = ()=>{
+        if (window.VANTA) window.VANTA.BIRDS({
+            el: ".bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color1: 0x2dff
+        })
+    }
+    setVanta()
+</script>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
