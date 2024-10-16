@@ -16,7 +16,16 @@
             margin-top: 50px;
             margin-bottom: 50px;
         }
+        .btn {
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.3s ease, transform 0.3s ease; /* Include transform in the transition */
+        }
 
+        .btn:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px); /* Move the button up slightly */
+        }
         .card {
             border: none;
             border-radius: 15px;

@@ -18,6 +18,15 @@
             background-color: #343a40;
             color: #fff;
         }
+        .btn {
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.3s ease, transform 0.3s ease; /* Include transform in the transition */
+        }
+        .btn:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px); /* Move the button up slightly */
+        }
         .btn-custom {
             background-color: #343a40;
             color: #fff;
