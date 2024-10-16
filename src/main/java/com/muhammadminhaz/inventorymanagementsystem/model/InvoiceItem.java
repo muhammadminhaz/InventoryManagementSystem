@@ -13,6 +13,46 @@ public class InvoiceItem {
     private Integer quantity;
     @Column(name = "subtotal", nullable = false)
     private Double subtotal;
+    @Column(name = "is_customized")
+    private Boolean isCustomized = false;
+    @Column(name = "print_type")
+    private String printType;
+    @Column(name = "adjusted_price")
+    private Double adjustedPrice;
+    @Column(name = "printed_side")
+    private Integer printedSide;
+
+    public String getPrintType() {
+        return printType;
+    }
+
+    public void setPrintType(String printType) {
+        this.printType = printType;
+    }
+
+    public Boolean getCustomized() {
+        return isCustomized;
+    }
+
+    public void setCustomized(Boolean customized) {
+        isCustomized = customized;
+    }
+
+    public Double getAdjustedPrice() {
+        return adjustedPrice;
+    }
+
+    public void setAdjustedPrice(Double adjustedPrice) {
+        this.adjustedPrice = adjustedPrice;
+    }
+
+    public Integer getPrintedSide() {
+        return printedSide;
+    }
+
+    public void setPrintedSide(Integer printedSide) {
+        this.printedSide = printedSide;
+    }
 
     @ManyToOne
     @JoinColumn(name = "invoice_id")
