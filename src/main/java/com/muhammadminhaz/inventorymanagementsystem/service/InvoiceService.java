@@ -86,6 +86,7 @@ public class InvoiceService {
         invoice.setCustomer(customer);
         invoice.setDate(LocalDateTime.now());
         invoice.setTotalAmount(0.0);
+        Double totalAmount = 0.0;
 
         for (InvoiceItem item : invoiceItems) {
             Product product = productDAO.findById(item.getProduct().getId())
@@ -101,15 +102,12 @@ public class InvoiceService {
             invoiceItem.setPrintType(item.getPrintType());
             invoiceItem.setAdjustedPrice(item.getAdjustedPrice());
             product.setQuantity(product.getQuantity() - item.getQuantity());
-            invoiceItem.setSubtotal((item.getSubtotal() * item.getQuantity()));
-
+            Double subTotal = item.getSubtotal();
+            invoiceItem.setSubtotal(subTotal);
+            totalAmount += subTotal;
             invoice.addInvoiceItem(invoiceItem);
         }
 
-        Double totalAmount = 0.0;
-        for (InvoiceItem invoiceItem : invoiceItems) {
-            totalAmount += invoiceItem.getSubtotal();
-        }
         if (discountAmount != null) {
             totalAmount -= discountAmount;
         }
