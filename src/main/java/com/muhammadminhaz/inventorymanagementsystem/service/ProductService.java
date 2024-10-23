@@ -18,23 +18,18 @@ public class ProductService {
         this.productDAO = productDAO;
     }
 
-    // Create a new product
     public Product createProduct(Product product) {
         return productDAO.save(product);
     }
 
-
-    // Retrieve all products
     public List<Product> getAllProducts() {
         return productDAO.findAll();
     }
 
-    // Retrieve a specific product by ID
     public Optional<Product> getProductById(Long id) {
         return productDAO.findById(id);
     }
 
-    // Update an existing product
     public Product updateProduct(Long id, Product productDetails) {
         Optional<Product> optionalProduct = productDAO.findById(id);
         if (optionalProduct.isPresent()) {
@@ -47,11 +42,9 @@ public class ProductService {
             product.setQuantity(productDetails.getQuantity());
             return productDAO.save(product);
         }
-        return null; // or throw an exception
+        return null;
     }
 
-
-    // Delete a product
     public void deleteProduct(Long id) {
         productDAO.deleteById(id);
     }

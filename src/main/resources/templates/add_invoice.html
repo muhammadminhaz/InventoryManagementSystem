@@ -221,12 +221,11 @@
     }
     setVanta()
 </script>
-<!-- Custom script for handling dynamic product rows and total amount calculation -->
 <script>
     $(document).ready(function () {
         function updateTotal() {
             let total = 0;
-            let productCount = 0; // Keep track of the number of products
+            let productCount = 0;
 
             $('.product-row').each(function () {
                 const subtotal = parseFloat($(this).find('.subtotal').val()) || 0;
@@ -234,8 +233,8 @@
                 productCount++;
             });
 
-            const discount = parseFloat($('#discountAmount').val()) || 0; // Get the discount value
-            total = total - discount; // Subtract the discount from the total
+            const discount = parseFloat($('#discountAmount').val()) || 0;
+            total = total - discount;
 
             $('#totalAmount').text(total.toFixed(2));
             toggleNoProductsMessage(productCount);
@@ -249,7 +248,7 @@
             }
         }
 
-        let productCount = 1; // Start counting products from 1
+        let productCount = 1;
 
         $('#addProduct').click(function () {
             const newProductRow = `
@@ -306,34 +305,32 @@
         $(document).on('change', '.productSelect', function () {
             const row = $(this).closest('.product-row');
             const price = parseFloat($(this).find('option:selected').data('price')) || 0;
-            const quantity = parseFloat(row.find('.quantity').val()) || 1; // Default to 1
+            const quantity = parseFloat(row.find('.quantity').val()) || 1;
             const adjustedPrice = parseFloat(row.find('.adjusted-price').val()) || 0;
-            const subtotal = (price + adjustedPrice) * quantity; // Calculate subtotal
-            row.find('.subtotal').val(subtotal.toFixed(2)); // Update subtotal
+            const subtotal = (price + adjustedPrice) * quantity;
+            row.find('.subtotal').val(subtotal.toFixed(2));
             updateTotal();
         });
 
         $(document).on('change', '.quantity', function () {
             const row = $(this).closest('.product-row');
-            const price = parseFloat(row.find('.productSelect option:selected').data('price')) || 0; // Get current product price
-            const adjustedPrice = parseFloat(row.find('.adjusted-price').val()) || 0; // Get adjusted price
-            const quantity = parseFloat($(this).val()) || 1; // Get new quantity
+            const price = parseFloat(row.find('.productSelect option:selected').data('price')) || 0;
+            const adjustedPrice = parseFloat(row.find('.adjusted-price').val()) || 0;
+            const quantity = parseFloat($(this).val()) || 1;
 
-            // Calculate new subtotal
             const newSubtotal = (price + adjustedPrice) * quantity;
-            row.find('.subtotal').val(newSubtotal.toFixed(2)); // Update subtotal
+            row.find('.subtotal').val(newSubtotal.toFixed(2));
             updateTotal();
         });
 
         $(document).on('change', '.adjusted-price', function () {
             const row = $(this).closest('.product-row');
             const price = parseFloat(row.find('.productSelect option:selected').data('price')) || 0; // Get current product price
-            const quantity = parseFloat(row.find('.quantity').val()) || 1; // Get current quantity
+            const quantity = parseFloat(row.find('.quantity').val()) || 1;
             const adjustedPrice = parseFloat($(this).val()) || 0;
 
-            // Calculate new subtotal based on adjusted price
             const newSubtotal = (price + adjustedPrice) * quantity;
-            row.find('.subtotal').val(newSubtotal.toFixed(2)); // Update subtotal
+            row.find('.subtotal').val(newSubtotal.toFixed(2));
             updateTotal();
         });
 

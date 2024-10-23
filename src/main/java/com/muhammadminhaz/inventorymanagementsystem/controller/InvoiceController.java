@@ -43,28 +43,22 @@ public class InvoiceController {
         this.invoiceItemDAO = invoiceItemDAO;
     }
 
-    // Method to show the list of invoices
     @GetMapping("/list")
     public String listInvoices(Model model) {
         List<Invoice> invoices = invoiceService.getAllInvoices();
         model.addAttribute("invoices", invoices);
-        return "invoice_list"; // Return the view name for invoice list
+        return "invoice_list";
     }
 
-    // Method to show the form for adding a new invoice
     @GetMapping("/add")
     public String showAddInvoiceForm(Model model) {
         model.addAttribute("invoice", new Invoice());
         model.addAttribute("products", productService.getAllProducts());
-        return "add_invoice"; // Return the view name for adding invoice
+        return "add_invoice";
     }
 
-    // Method to handle adding a new invoice
     @PostMapping("/create_invoice")
     public String createInvoice(@ModelAttribute Invoice invoice, Model model) {
-        // Log the invoice details to see the selected products
-        System.out.println("Invoice: " + invoice);
-
         Customer customer;
         if (customerDAO.findByNameAndEmail(invoice.getCustomer().getName(), invoice.getCustomer().getEmail()).isEmpty()) {
             customer = new Customer();
@@ -85,32 +79,28 @@ public class InvoiceController {
     }
 
 
-    // Method to show the form for editing an existing invoice
     @GetMapping("/{id}/edit")
     public String showEditInvoiceForm(@PathVariable Long id, Model model) {
         Optional<Invoice> invoice = invoiceService.getInvoiceById(id);
         if (invoice.isPresent()) {
             model.addAttribute("invoice", invoice);
-            return "add_invoice"; // Return the view name for editing invoice
+            return "add_invoice";
         }
-        return "redirect:/invoices/list"; // If invoice not found, redirect to the list
+        return "redirect:/invoices/list";
     }
 
-    // Method to handle updating an existing invoice
     @PutMapping("/{id}")
     public String updateInvoice(@PathVariable Long id, @ModelAttribute Invoice invoice) {
         invoiceService.updateInvoice(id, invoice);
-        return "redirect:/invoices/list"; // Redirect to the invoice list
+        return "redirect:/invoices/list";
     }
 
-    // Method to handle deleting an invoice
     @DeleteMapping("/{id}/delete")
     public String deleteInvoice(@PathVariable Long id) {
         invoiceService.deleteInvoice(id);
-        return "redirect:/invoices/list"; // Redirect to the invoice list
+        return "redirect:/invoices/list";
     }
 
-    // Method to view details of a specific invoice
     @GetMapping("/{id}/details")
     public String viewInvoiceDetails(@PathVariable Long id, Model model) {
         Optional<Invoice> invoice = invoiceService.getInvoiceById(id);
@@ -120,9 +110,9 @@ public class InvoiceController {
 
             model.addAttribute("invoice", invoice.get());
             model.addAttribute("formattedDate", formattedDate);
-            return "invoice_details"; // Return the view name for viewing invoice details
+            return "invoice_details";
         }
-        return "redirect:/invoices/list"; // If invoice not found, redirect to the list
+        return "redirect:/invoices/list";
     }
 
 }

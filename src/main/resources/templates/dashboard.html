@@ -122,24 +122,21 @@
     // Sum sales by date
     const salesByDate = {};
 
-    // Aggregate sales for each date
     salesData.forEach((sales, index) => {
-        const date = new Date(dates[index]).toISOString().split('T')[0]; // Get the date part in YYYY-MM-DD format
-        salesByDate[date] = (salesByDate[date] || 0) + sales; // Sum the sales for the date
+        const date = new Date(dates[index]).toISOString().split('T')[0];
+        salesByDate[date] = (salesByDate[date] || 0) + sales;
     });
 
-    // Prepare data for Highcharts
     const data = Object.entries(salesByDate).map(([date, totalSales]) => {
         return {
-            x: new Date(date).getTime(), // Use the date as a timestamp
+            x: new Date(date).getTime(),
             y: totalSales
         };
     });
 
-    // Create the chart
     Highcharts.chart('salesChart', {
         chart: {
-            type: 'spline' // Change to spline chart
+            type: 'spline'
         },
         title: {
             text: 'Total Sales Over Time'
@@ -156,7 +153,7 @@
             },
             labels: {
                 formatter: function () {
-                    return Highcharts.dateFormat('%e %b, %Y', this.value); // Format the label
+                    return Highcharts.dateFormat('%e %b, %Y', this.value);
                 }
             }
         },
@@ -168,14 +165,14 @@
         },
         tooltip: {
             formatter: function () {
-                const localDate = new Date(this.x + 6 * 60 * 60 * 1000); // Convert to local time
+                const localDate = new Date(this.x + 6 * 60 * 60 * 1000);
                 return Highcharts.dateFormat('%e %b, %Y', localDate.getTime()) + '<br/>' +
-                    'Total Sales: ৳' + this.y; // Show summed sales amount
+                    'Total Sales: ৳' + this.y;
             }
         },
         series: [{
             name: 'Sales',
-            data: data, // Use summed data
+            data: data,
             marker: {
                 enabled: true
             },

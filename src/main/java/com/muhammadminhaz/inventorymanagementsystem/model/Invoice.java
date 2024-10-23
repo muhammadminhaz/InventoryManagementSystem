@@ -71,12 +71,12 @@ public class Invoice {
 
     public void addInvoiceItem(InvoiceItem invoiceItem) {
         invoiceItems.add(invoiceItem);
-        invoiceItem.setInvoice(this); // Set the back-reference
+        invoiceItem.setInvoice(this);
     }
 
     public void removeInvoiceItem(InvoiceItem invoiceItem) {
         invoiceItems.remove(invoiceItem);
-        invoiceItem.setInvoice(null); // Clear the back-reference
+        invoiceItem.setInvoice(null);
     }
 
     public Double getDiscountAmount() {

@@ -19,7 +19,7 @@ public class LoginController {
 
     @GetMapping("/login")
     public String login() {
-        return "home"; // This will return the home.html with the login form
+        return "home";
     }
 
     @PostMapping("/login")

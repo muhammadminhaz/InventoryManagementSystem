@@ -62,8 +62,8 @@ public class ProductController {
     public String showEditForm(@PathVariable Long id, Model model) {
         Product product = productService.getProductById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid product Id:" + id));
-        model.addAttribute("product", product); // Pass the product to the form
-        return "add_product"; // Use the same add_product.html template
+        model.addAttribute("product", product);
+        return "add_product";
     }
 
     @GetMapping("/list")

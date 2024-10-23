@@ -18,26 +18,23 @@ public class CustomerService {
         this.customerDAO = customerDAO;
     }
 
-    // Method to save a new customer
     public Customer save(Customer customer) {
         return customerDAO.save(customer);
     }
 
     public Customer findById(Long id) {
         Optional<Customer> customerOptional = customerDAO.findById(id);
-        return customerOptional.orElse(null); // Return the customer or null if not found
+        return customerOptional.orElse(null);
     }
-    // Method to find all customers
+
     public List<Customer> findAll() {
         return customerDAO.findAll();
     }
 
-    // Method to update a customer
     public Customer update(Customer customer) {
         return customerDAO.save(customer);
     }
 
-    // Method to delete a customer by ID
     public void deleteById(Long id) {
         customerDAO.deleteById(id);
     }
