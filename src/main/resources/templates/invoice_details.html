@@ -167,9 +167,8 @@
             <table class="table table-bordered table-hover">
                 <thead>
                 <tr>
-                    <th>Product Name</th>
+                    <th>Item Information</th>
                     <th class="text-center">Quantity</th>
-                    <th class="text-center">Price</th>
                     <th class="text-center">Subtotal</th>
                 </tr>
                 </thead>
@@ -179,10 +178,17 @@
                         <strong>Name:</strong> <span th:text="${invoiceItem.product.name}"></span><br>
                         <strong>Description:</strong> <span th:text="${invoiceItem.product.description}"></span><br>
                         <strong>Color:</strong> <span th:text="${invoiceItem.product.colour}"></span><br>
-                        <strong>Size:</strong> <span th:text="${invoiceItem.product.size}"></span>
+                        <strong>Size:</strong> <span th:text="${invoiceItem.product.size}"></span><br>
+                        <div th:if="${invoiceItem.printType != null && invoiceItem.printType != 'None'}">
+                            <strong>Print Type:</strong> <span th:text="${invoiceItem.printType}"></span><br>
+                        </div>
+
+                        <div th:if="${invoiceItem.printedSide != null && invoiceItem.printedSide != 0}">
+                            <strong>Printed Side:</strong> <span th:text="${invoiceItem.printedSide}"></span><br>
+                        </div>
+
                     </td>
                     <td class="text-center" th:text="${invoiceItem.quantity}"></td>
-                    <td class="text-center">৳<span th:text="${invoiceItem.product.price}"></span></td>
                     <td class="text-center">৳<span th:text="${invoiceItem.subtotal}"></span></td>
                 </tr>
                 </tbody>

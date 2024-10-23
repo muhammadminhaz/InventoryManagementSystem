@@ -29,6 +29,7 @@
         .container {
             flex: 1; /* Allow the container to grow and fill the space */
             padding: 20px; /* Add padding inside the container */
+            max-width: 1400px; /* Increase the max-width of the container */
             position: relative; /* Ensure the container is positioned relative for the background */
         }
 
@@ -71,8 +72,12 @@
             font-style: italic;
         }
 
+        .table {
+            width: 100%;
+        }
+
         .table th, .table td {
-            width: 25%;
+            width: auto;
             text-align: center;
         }
     </style>
@@ -100,7 +105,8 @@
                 </div>
                 <div class="form-group">
                     <label for="customerAddress">Customer Address</label>
-                    <textarea class="form-control" id="customerAddress" name="customer.address" rows="3" required></textarea>
+                    <textarea class="form-control" id="customerAddress" name="customer.address" rows="3"
+                              required></textarea>
                 </div>
 
                 <h5>Products</h5>
@@ -108,15 +114,18 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <th>Select Product</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
-                            <th>Action</th>
+                            <th style="width: 20%;">Select Product</th>
+                            <th style="width: 10%;">Quantity</th>
+                            <th style="width: 15%;">Print Type</th>
+                            <th style="width: 10%;">Sides</th>
+                            <th style="width: 10%;">Adjusted Price</th>
+                            <th style="width: 10%;">Final Price</th>
+                            <th style="width: 10%;">Action</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr class="product-row">
-                            <td>
+                            <td colspan="1">
                                 <select class="form-control productSelect" name="invoiceItems[0].product.id" required>
                                     <option value="" disabled selected>Select a product</option>
                                     <option th:each="product : ${products}"
@@ -126,20 +135,40 @@
                                     </option>
                                 </select>
                             </td>
-                            <td>
-                                <input type="number" class="form-control quantity" name="invoiceItems[0].quantity" min="1" value="1" required>
+                            <td colspan="1">
+                                <input type="number" class="form-control quantity" name="invoiceItems[0].quantity"
+                                       min="1" value="1" required>
                             </td>
-                            <td>
-                                <input type="number" class="form-control subtotal" name="invoiceItems[0].subtotal" step="0.01" readonly>
+                            <td colspan="1">
+                                <select class="form-control" name="invoiceItems[0].printType" required>
+                                    <option value="None" selected>None</option>
+                                    <option value="DTF">DTF</option>
+                                    <option value="Sublimation">Sublimation</option>
+                                </select>
                             </td>
-                            <td>
+                            <td colspan="1">
+                                <select class="form-control" name="invoiceItems[0].printedSide" required>
+                                    <option value="0" selected>0</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                </select>
+                            </td>
+                            <td colspan="1">
+                                <input type="number" class="form-control adjusted-price"
+                                       name="invoiceItems[0].adjustedPrice" step="0.01">
+                            </td>
+                            <td colspan="1">
+                                <input type="number" class="form-control subtotal" name="invoiceItems[0].subtotal"
+                                       step="0.01" readonly>
+                            </td>
+                            <td colspan="1">
                                 <button type="button" class="btn btn-danger remove-product">
-                                    <i class="material-icons">remove_circle</i> Remove Product
+                                    <i class="material-icons">remove_circle</i>
                                 </button>
                             </td>
                         </tr>
                         <tr class="no-products" style="display: none;">
-                            <td colspan="4">No Products Added</td>
+                            <td colspan="7">No Products Added</td>
                         </tr>
                         </tbody>
                     </table>
@@ -153,7 +182,8 @@
                 <!-- Discount Field -->
                 <div class="form-group">
                     <label for="discountAmount">Discount</label>
-                    <input type="number" class="form-control" id="discountAmount" name="discountAmount" min="0" step="0.01" value="0">
+                    <input type="number" class="form-control" id="discountAmount" name="discountAmount" min="0"
+                           step="0.01" value="0">
                 </div>
 
                 <h5>Total Amount: ৳<span id="totalAmount">0.00</span></h5>
@@ -176,7 +206,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.birds.min.js"></script>
 <script>
-    var setVanta = ()=>{
+    var setVanta = () => {
         if (window.VANTA) window.VANTA.BIRDS({
             el: ".bg",
             mouseControls: true,
@@ -199,8 +229,8 @@
             let productCount = 0; // Keep track of the number of products
 
             $('.product-row').each(function () {
-                const price = parseFloat($(this).find('.subtotal').val()) || 0;
-                total += price;
+                const subtotal = parseFloat($(this).find('.subtotal').val()) || 0;
+                total += subtotal;
                 productCount++;
             });
 
@@ -224,23 +254,40 @@
         $('#addProduct').click(function () {
             const newProductRow = `
             <tr class="product-row">
-                <td>
+                <td colspan="1">
                     <select class="form-control productSelect" name="invoiceItems[${productCount}].product.id" required>
                         <option value="" disabled selected>Select a product</option>
                         ${products.map(product => `
-                            <option value="${product.id}" data-price="${product.price}">${product.name}</option>
+                            <option value="${product.id}" data-price="${product.price}">${product.name} (${product.description}, ${product.colour}, ${product.size})</option>
                         `).join('')}
                     </select>
                 </td>
-                <td>
+                <td colspan="1">
                     <input type="number" class="form-control quantity" name="invoiceItems[${productCount}].quantity" min="1" value="1" required>
                 </td>
-                <td>
+                <td colspan="1">
+                    <select class="form-control" name="invoiceItems[${productCount}].printType" required>
+                        <option value="None" selected>None</option>
+                        <option value="DTF">DTF</option>
+                        <option value="Sublimation">Sublimation</option>
+                    </select>
+                </td>
+                <td colspan="1">
+                    <select class="form-control" name="invoiceItems[${productCount}].printedSide" required>
+                        <option value="0" selected>0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                    </select>
+                </td>
+                <td colspan="1">
+                    <input type="number" class="form-control adjusted-price" name="invoiceItems[${productCount}].adjustedPrice" step="0.01" value="0">
+                </td>
+                <td colspan="1">
                     <input type="number" class="form-control subtotal" name="invoiceItems[${productCount}].subtotal" step="0.01" readonly>
                 </td>
-                <td>
+                <td colspan="1">
                     <button type="button" class="btn btn-danger remove-product">
-                        <i class="material-icons">remove_circle</i> Remove Product
+                        <i class="material-icons">remove_circle</i>
                     </button>
                 </td>
             </tr>
@@ -259,21 +306,38 @@
         $(document).on('change', '.productSelect', function () {
             const row = $(this).closest('.product-row');
             const price = parseFloat($(this).find('option:selected').data('price')) || 0;
-            row.find('.subtotal').val(price);
-            row.find('.quantity').val(1); // Set default quantity to 1
+            const quantity = parseFloat(row.find('.quantity').val()) || 1; // Default to 1
+            const adjustedPrice = parseFloat(row.find('.adjusted-price').val()) || 0;
+            const subtotal = (price + adjustedPrice) * quantity; // Calculate subtotal
+            row.find('.subtotal').val(subtotal.toFixed(2)); // Update subtotal
             updateTotal();
         });
 
         $(document).on('change', '.quantity', function () {
             const row = $(this).closest('.product-row');
-            const price = parseFloat(row.find('.subtotal').val()) || 0;
-            const quantity = parseFloat($(this).val()) || 0;
-            const updatedPrice = (price * quantity).toFixed(2);
-            row.find('.subtotal').val(updatedPrice);
+            const price = parseFloat(row.find('.productSelect option:selected').data('price')) || 0; // Get current product price
+            const adjustedPrice = parseFloat(row.find('.adjusted-price').val()) || 0; // Get adjusted price
+            const quantity = parseFloat($(this).val()) || 1; // Get new quantity
+
+            // Calculate new subtotal
+            const newSubtotal = (price + adjustedPrice) * quantity;
+            row.find('.subtotal').val(newSubtotal.toFixed(2)); // Update subtotal
             updateTotal();
         });
 
-        $('#discountAmount').on('input', function() {
+        $(document).on('change', '.adjusted-price', function () {
+            const row = $(this).closest('.product-row');
+            const price = parseFloat(row.find('.productSelect option:selected').data('price')) || 0; // Get current product price
+            const quantity = parseFloat(row.find('.quantity').val()) || 1; // Get current quantity
+            const adjustedPrice = parseFloat($(this).val()) || 0;
+
+            // Calculate new subtotal based on adjusted price
+            const newSubtotal = (price + adjustedPrice) * quantity;
+            row.find('.subtotal').val(newSubtotal.toFixed(2)); // Update subtotal
+            updateTotal();
+        });
+
+        $('#discountAmount').on('input', function () {
             updateTotal();
         });
 

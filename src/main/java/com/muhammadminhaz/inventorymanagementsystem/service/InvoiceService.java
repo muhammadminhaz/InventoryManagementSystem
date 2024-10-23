@@ -122,8 +122,14 @@ public class InvoiceService {
             InvoiceItem invoiceItem = new InvoiceItem();
             invoiceItem.setProduct(product);
             invoiceItem.setQuantity(item.getQuantity());
+            if (item.getPrintedSide() != 0 && item.getPrintType() != "None") {
+                invoiceItem.setCustomized(true);
+            }
+            invoiceItem.setPrintedSide(item.getPrintedSide());
+            invoiceItem.setPrintType(item.getPrintType());
+            invoiceItem.setAdjustedPrice(item.getAdjustedPrice());
             product.setQuantity(product.getQuantity() - item.getQuantity());
-            invoiceItem.setSubtotal((product.getPrice() * item.getQuantity()));
+            invoiceItem.setSubtotal((item.getSubtotal() * item.getQuantity()));
 
             invoice.addInvoiceItem(invoiceItem);
         }
