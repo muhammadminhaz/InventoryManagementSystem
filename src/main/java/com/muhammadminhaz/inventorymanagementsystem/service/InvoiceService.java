@@ -21,7 +21,7 @@ public class InvoiceService {
     private final InvoiceDAO invoiceDAO;
     private final CustomerDAO customerDAO;
     private final ProductDAO productDAO;
-    private InvoiceItemDAO invoiceItemDAO;
+    private final InvoiceItemDAO invoiceItemDAO;
 
     @Autowired
     public InvoiceService(InvoiceDAO invoiceDAO, InvoiceItemDAO invoiceItemDAO, CustomerDAO customerDAO, ProductDAO productDAO) {
