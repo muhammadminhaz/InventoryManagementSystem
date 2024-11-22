@@ -4,10 +4,7 @@ import com.muhammadminhaz.inventorymanagementsystem.dao.CustomerDAO;
 import com.muhammadminhaz.inventorymanagementsystem.dao.InvoiceDAO;
 import com.muhammadminhaz.inventorymanagementsystem.dao.InvoiceItemDAO;
 import com.muhammadminhaz.inventorymanagementsystem.dao.ProductDAO;
-import com.muhammadminhaz.inventorymanagementsystem.model.Customer;
-import com.muhammadminhaz.inventorymanagementsystem.model.Invoice;
-import com.muhammadminhaz.inventorymanagementsystem.model.InvoiceItem;
-import com.muhammadminhaz.inventorymanagementsystem.model.Product;
+import com.muhammadminhaz.inventorymanagementsystem.model.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,16 +19,20 @@ public class InvoiceService {
     private final CustomerDAO customerDAO;
     private final ProductDAO productDAO;
     private final InvoiceItemDAO invoiceItemDAO;
+    private final AdminService adminService;
 
     @Autowired
-    public InvoiceService(InvoiceDAO invoiceDAO, InvoiceItemDAO invoiceItemDAO, CustomerDAO customerDAO, ProductDAO productDAO) {
+    public InvoiceService(InvoiceDAO invoiceDAO, InvoiceItemDAO invoiceItemDAO, CustomerDAO customerDAO, ProductDAO productDAO, AdminService adminService) {
         this.invoiceDAO = invoiceDAO;
         this.invoiceItemDAO = invoiceItemDAO;
         this.customerDAO = customerDAO;
         this.productDAO = productDAO;
+        this.adminService = adminService;
     }
 
     public Invoice saveInvoice(Invoice invoice) {
+        Admin currentAdmin = adminService.getCurrentAdmin();
+        invoice.setAdmin(currentAdmin);
         return invoiceDAO.save(invoice);
     }
 
@@ -45,6 +46,10 @@ public class InvoiceService {
 
     public List<Invoice> getAllInvoices() {
         return invoiceDAO.findAll();
+    }
+
+    public List<Invoice> getAllInvoicesByAdmin(Admin admin) {
+        return invoiceDAO.findByAdmin(admin);
     }
 
     public Optional<Invoice> getInvoiceById(Long id) {
@@ -79,10 +84,12 @@ public class InvoiceService {
 
     @Transactional
     public Invoice saveInvoiceWithItems(Long customerId, List<InvoiceItem> invoiceItems, Double discountAmount) {
+        Admin admin = adminService.getCurrentAdmin();
         Customer customer = customerDAO.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
         Invoice invoice = new Invoice();
+        invoice.setAdmin(admin);
         invoice.setCustomer(customer);
         invoice.setDate(LocalDateTime.now());
         invoice.setTotalAmount(0.0);

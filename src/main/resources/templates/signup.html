@@ -3,43 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Login - Inventory Management System</title>
+    <title>Sign Up - Inventory Management System</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
             background-color: #f4f4f4;
         }
-        .login-container {
+        .signup-container {
             margin-top: 100px;
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="row justify-content-center login-container">
+    <div class="row justify-content-center signup-container">
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header text-center">
-                    <h3>Admin Login</h3>
+                    <h3>Sign Up</h3>
                 </div>
                 <div class="card-body">
-                    <form action="/login" method="post">
-                        <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+                    <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                        <p th:text="${param.error}"></p>
+                    </div>
+
+                    <form th:action="@{/signup}" th:object="${admin}" method="post">
                         <div class="form-group">
                             <label for="username">Username</label>
-                            <input type="text" id="username" name="username" class="form-control" placeholder="Enter username" required>
+                            <input type="text" id="username" name="username"  class="form-control" placeholder="Enter username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Email</label>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="Enter E-mail" required>
                         </div>
                         <div class="form-group">
                             <label for="password">Password</label>
                             <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" required>
                         </div>
-                        <div th:if="${error}" class="alert alert-danger" role="alert">
-                            <p th:text="${error}"></p>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                        <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
                     </form>
-                    <a th:href="@{/signup}" style="margin-top: 20px" class="btn btn-block btn-secondary">Sign Up</a>
+                    <a th:href="@{/}" style="margin-top: 20px" class="btn btn-block btn-secondary">Back to Login</a>
                 </div>
                 <div class="card-footer text-center">
                     <small>© 2024 Inventory Management System</small>

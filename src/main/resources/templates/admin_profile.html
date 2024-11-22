@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Admin Profile</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Material Icons CDN -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .profile-card {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            text-align: center;
+        }
+        .profile-card h2 {
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #343a40;
+        }
+        .logo-upload-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .logo-upload-container input[type="file"] {
+            display: none;
+        }
+        .logo-upload {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            border: 2px dashed #007bff;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto;
+            cursor: pointer;
+            background: #f8f9fa;
+        }
+        .logo-upload:hover {
+            border-color: #0056b3;
+        }
+        .logo-upload img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .logo-upload i {
+            font-size: 50px;
+            color: #007bff;
+            line-height: 120px;
+        }
+        .logo-upload:hover i {
+            color: #0056b3;
+        }
+        .form-group {
+            text-align: left;
+        }
+        .btn-primary {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="profile-card">
+        <h2>Admin Profile of @<span th:text="${admin.username}"/></h2>
+
+        <!-- Profile Form -->
+        <form th:action="@{/update-profile}" th:object="${admin}" method="post" enctype="multipart/form-data">
+            <div class="logo-upload-container">
+                <label for="logoInput" class="logo-upload">
+                    <i class="material-icons" id="uploadIcon" th:if="${admin.logo == null}">cloud_upload</i>
+                    <img id="logoPreview"
+                         th:src="@{/uploads/admin_logos/} + ${admin.logo}"
+                         alt="Admin Logo"
+                         th:style="${admin.logo != null} ? 'display: block;' : 'display: none;'">
+                </label>
+                <input type="file" id="logoInput" name="logoPath" accept="image/*" onchange="previewLogo()">
+            </div>
+
+            <div class="form-group">
+                <label for="displayName">Name</label>
+                <input type="text" class="form-control" id="displayName" name="displayName" th:value="${admin.displayName}" placeholder="Enter your name" required>
+            </div>
+            <div class="form-group">
+                <label for="adminPhone">Phone</label>
+                <input type="text" class="form-control" id="adminPhone" name="phone" th:value="${admin.phone}" placeholder="Enter your phone number">
+            </div>
+            <div class="form-group">
+                <label for="adminBio">Address</label>
+                <input type="text" class="form-control" id="adminBio" name="address" th:value="${admin.address}" rows="3" placeholder="Enter your address">
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    // Preview Logo Functionality
+    function previewLogo() {
+        const input = document.getElementById('logoInput');
+        const preview = document.getElementById('logoPreview');
+        const uploadIcon = document.getElementById('uploadIcon');
+        const file = input.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = "block";
+                uploadIcon.style.display = "none";
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+
+</body>
+</html>

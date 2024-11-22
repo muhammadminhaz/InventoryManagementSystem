@@ -1,5 +1,6 @@
 package com.muhammadminhaz.inventorymanagementsystem.service;
 
+import com.muhammadminhaz.inventorymanagementsystem.model.Admin;
 import com.muhammadminhaz.inventorymanagementsystem.model.Customer;
 import com.muhammadminhaz.inventorymanagementsystem.dao.CustomerDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,17 @@ import java.util.Optional;
 public class CustomerService {
 
     private final CustomerDAO customerDAO;
+    private final AdminService adminService;
 
     @Autowired
-    public CustomerService(CustomerDAO customerDAO) {
+    public CustomerService(CustomerDAO customerDAO, AdminService adminService) {
         this.customerDAO = customerDAO;
+        this.adminService = adminService;
     }
 
     public Customer save(Customer customer) {
+        Admin currentAdmin = adminService.getCurrentAdmin();
+        customer.setAdmin(currentAdmin);
         return customerDAO.save(customer);
     }
 

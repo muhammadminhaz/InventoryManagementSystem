@@ -1,5 +1,6 @@
 package com.muhammadminhaz.inventorymanagementsystem.service;
 
+import com.muhammadminhaz.inventorymanagementsystem.model.Admin;
 import com.muhammadminhaz.inventorymanagementsystem.model.Invoice;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +18,8 @@ public class DashboardService {
         this.invoiceService = invoiceService;
     }
 
-    public Map<String, Object> salesData() {
-        List<Invoice> invoices = invoiceService.getAllInvoices();
+    public Map<String, Object> salesData(Admin admin) {
+        List<Invoice> invoices = invoiceService.getAllInvoicesByAdmin(admin);
 
         invoices.sort(Comparator.comparing(Invoice::getDate));
         List<Double> sales = invoices.stream()

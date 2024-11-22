@@ -36,6 +36,18 @@ public class Product {
     @Column(name = "size")
     private String size;
 
+    @ManyToOne
+    @JoinColumn(name = "created_by", nullable = false)
+    private Admin admin;
+
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
+
     public String getSize() {
         return size;
     }

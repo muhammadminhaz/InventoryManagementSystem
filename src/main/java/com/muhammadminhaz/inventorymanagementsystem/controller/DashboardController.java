@@ -1,5 +1,7 @@
 package com.muhammadminhaz.inventorymanagementsystem.controller;
 
+import com.muhammadminhaz.inventorymanagementsystem.model.Admin;
+import com.muhammadminhaz.inventorymanagementsystem.service.AdminService;
 import com.muhammadminhaz.inventorymanagementsystem.service.DashboardService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,14 +14,17 @@ import java.util.Map;
 public class DashboardController {
 
     private final DashboardService dashboardService;
+    private final AdminService adminService;
 
-    public DashboardController(DashboardService dashboardService) {
+    public DashboardController(DashboardService dashboardService, AdminService adminService) {
         this.dashboardService = dashboardService;
+        this.adminService = adminService;
     }
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        Map<String, Object> salesData = dashboardService.salesData();
+        Admin admin = adminService.getCurrentAdmin();
+        Map<String, Object> salesData = dashboardService.salesData(admin);
         Object sales = salesData.get("sales");
         Object dates = salesData.get("dates");
 

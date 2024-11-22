@@ -27,6 +27,18 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Invoice> invoices = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "created_by", nullable = false)
+    private Admin admin;
+
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
+
     public List<Invoice> getInvoices() {
         return invoices;
     }

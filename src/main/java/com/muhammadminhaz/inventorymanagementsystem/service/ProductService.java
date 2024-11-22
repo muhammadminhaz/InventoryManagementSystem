@@ -1,8 +1,12 @@
 package com.muhammadminhaz.inventorymanagementsystem.service;
 
+import com.muhammadminhaz.inventorymanagementsystem.dao.AdminDAO;
 import com.muhammadminhaz.inventorymanagementsystem.dao.ProductDAO;
+import com.muhammadminhaz.inventorymanagementsystem.model.Admin;
 import com.muhammadminhaz.inventorymanagementsystem.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,13 +16,19 @@ import java.util.Optional;
 public class ProductService {
 
     private final ProductDAO productDAO;
+    private final AdminDAO adminDAO;
+    private final AdminService adminService;
 
     @Autowired
-    public ProductService(ProductDAO productDAO) {
+    public ProductService(ProductDAO productDAO, AdminDAO adminDAO, AdminService adminService) {
         this.productDAO = productDAO;
+        this.adminDAO = adminDAO;
+        this.adminService = adminService;
     }
 
     public Product createProduct(Product product) {
+        Admin currentAdmin = adminService.getCurrentAdmin();
+        product.setAdmin(currentAdmin);
         return productDAO.save(product);
     }
 
