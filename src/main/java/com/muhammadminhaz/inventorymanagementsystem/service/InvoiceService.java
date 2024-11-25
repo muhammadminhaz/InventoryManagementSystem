@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -83,15 +84,16 @@ public class InvoiceService {
     }
 
     @Transactional
-    public Invoice saveInvoiceWithItems(Long customerId, List<InvoiceItem> invoiceItems, Double discountAmount) {
+    public Invoice saveInvoiceWithItems(Long customerId, List<InvoiceItem> invoiceItems, Double discountAmount, LocalDateTime date) {
         Admin admin = adminService.getCurrentAdmin();
         Customer customer = customerDAO.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
         Invoice invoice = new Invoice();
+        LocalDateTime invoiceDate = date == null ? LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"))) : date;
         invoice.setAdmin(admin);
         invoice.setCustomer(customer);
-        invoice.setDate(LocalDateTime.now());
+        invoice.setDate(invoiceDate);
         invoice.setTotalAmount(0.0);
         Double totalAmount = 0.0;
 

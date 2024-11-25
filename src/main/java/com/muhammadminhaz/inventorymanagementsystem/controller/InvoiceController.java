@@ -8,6 +8,7 @@ import com.muhammadminhaz.inventorymanagementsystem.model.Customer;
 import com.muhammadminhaz.inventorymanagementsystem.model.Invoice;
 import com.muhammadminhaz.inventorymanagementsystem.model.InvoiceItem;
 import com.muhammadminhaz.inventorymanagementsystem.model.Product;
+import com.muhammadminhaz.inventorymanagementsystem.service.AdminService;
 import com.muhammadminhaz.inventorymanagementsystem.service.CustomerService;
 import com.muhammadminhaz.inventorymanagementsystem.service.InvoiceService;
 import com.muhammadminhaz.inventorymanagementsystem.service.ProductService;
@@ -18,9 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/invoices")
@@ -28,19 +28,21 @@ public class InvoiceController {
 
     private final InvoiceService invoiceService;
     private final CustomerDAO customerDAO;
+    private final AdminService adminService;
     private ProductService productService;
     private CustomerService customerService;
     private InvoiceDAO invoiceDAO;
     private InvoiceItemDAO invoiceItemDAO;
     private ProductDAO productDAO;
 
-    public InvoiceController(InvoiceService invoiceService, ProductService productService, CustomerService customerService, InvoiceDAO invoiceDAO, CustomerDAO customerDAO, InvoiceItemDAO invoiceItemDAO, ProductDAO productDAO) {
+    public InvoiceController(InvoiceService invoiceService, ProductService productService, CustomerService customerService, InvoiceDAO invoiceDAO, CustomerDAO customerDAO, InvoiceItemDAO invoiceItemDAO, ProductDAO productDAO, AdminService adminService) {
         this.invoiceService = invoiceService;
         this.productService = productService;
         this.customerService = customerService;
         this.invoiceDAO = invoiceDAO;
         this.customerDAO = customerDAO;
         this.invoiceItemDAO = invoiceItemDAO;
+        this.adminService = adminService;
     }
 
     @GetMapping("/list")
@@ -72,7 +74,7 @@ public class InvoiceController {
         }
         invoice.setCustomer(customer);
 
-        Invoice savedInvoice = invoiceService.saveInvoiceWithItems(customer.getId(), invoice.getInvoiceItems(), invoice.getDiscountAmount());
+        Invoice savedInvoice = invoiceService.saveInvoiceWithItems(customer.getId(), invoice.getInvoiceItems(), invoice.getDiscountAmount(), invoice.getDate());
 
         model.addAttribute("invoice", invoice);
         return "redirect:/invoices/" + savedInvoice.getId() + "/details";
@@ -105,10 +107,28 @@ public class InvoiceController {
     public String viewInvoiceDetails(@PathVariable Long id, Model model) {
         Optional<Invoice> invoice = invoiceService.getInvoiceById(id);
         if (invoice.isPresent()) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM, yyyy hh:mm:ss a");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM, yyyy hh:mm a");
             String formattedDate = invoice.get().getDate().format(formatter);
-
+            List<Map<String, Object>> invoiceItemsWithProductInfo = invoice.get().getInvoiceItems().stream()
+                    .map(invoiceItem -> {
+                        Map<String, Object> itemMap = new HashMap<>();
+                        itemMap.put("productName", invoiceItem.getProduct().getName());
+                        itemMap.put("productDesc", invoiceItem.getProduct().getDescription());
+                        itemMap.put("productColour", invoiceItem.getProduct().getColour());
+                        itemMap.put("productSize", invoiceItem.getProduct().getSize());
+                        itemMap.put("productPrintType", invoiceItem.getPrintType());
+                        itemMap.put("productPrintedSide", invoiceItem.getPrintedSide());
+                        itemMap.put("productPrice", invoiceItem.getProduct().getPrice());
+                        itemMap.put("quantity", invoiceItem.getQuantity());
+                        itemMap.put("subtotal", invoiceItem.getSubtotal());
+                        return itemMap;
+                    })
+                    .toList();
             model.addAttribute("invoice", invoice.get());
+            model.addAttribute("invoiceTotalAmount", invoice.get().getTotalAmount());
+            model.addAttribute("invoiceDiscountAmount", invoice.get().getDiscountAmount());
+            model.addAttribute("invoiceItems", invoiceItemsWithProductInfo);
+            model.addAttribute("admin", adminService.getCurrentAdmin());
             model.addAttribute("formattedDate", formattedDate);
             return "invoice_details";
         }

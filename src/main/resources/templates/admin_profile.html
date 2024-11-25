@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Material Icons CDN -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <style>
         body {
             background-color: #f8f9fa;
@@ -79,9 +81,37 @@
             background-position: center; /* Center the image */
             opacity: 0.8; /* Optional: adjust opacity for better content visibility */
         }
+        .floating-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 12%;
+            font-size: 18px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+        .floating-btn:hover {
+            transform: translateY(-2px); /* Raise button on hover */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Deeper shadow on hover */
+        }
+        .btn-custom {
+            border-radius: 25px; /* Rounded corners for buttons */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow effect for buttons */
+            transition: all 0.3s ease; /* Smooth transition */
+        }
+        .btn-custom:hover {
+            transform: translateY(-2px); /* Raise button on hover */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Deeper shadow on hover */
+        }
     </style>
 </head>
 <body>
+<button class="btn floating-btn btn-custom" onclick="location.href='/dashboard'">
+    <i class="fas fa-tachometer-alt"></i> Return to Dashboard
+</button>
+
 <div class="bg"></div>
 <div class="container">
     <div class="profile-card">
