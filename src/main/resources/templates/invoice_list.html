@@ -85,7 +85,7 @@
                             </thead>
                             <tbody>
                             <tr th:each="invoice : ${invoices}">
-                                <td th:text="${invoice.id}"></td>
+                                <td th:text="${invoice.adminRefId}"></td>
                                 <td th:text="${invoice.date}"></td> <!-- Formatting the date -->
                                 <td th:text="${invoice.totalAmount}"></td>
                                 <td th:text="${invoice.customer.name}"></td> <!-- Accessing Customer Name -->

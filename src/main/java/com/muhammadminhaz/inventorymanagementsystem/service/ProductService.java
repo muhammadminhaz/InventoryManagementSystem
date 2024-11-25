@@ -33,7 +33,7 @@ public class ProductService {
     }
 
     public List<Product> getAllProducts() {
-        return productDAO.findAll();
+        return productDAO.findAllByAdmin(adminService.getCurrentAdmin());
     }
 
     public Optional<Product> getProductById(Long id) {

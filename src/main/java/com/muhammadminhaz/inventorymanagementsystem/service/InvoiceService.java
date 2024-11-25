@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +47,7 @@ public class InvoiceService {
     }
 
     public List<Invoice> getAllInvoices() {
-        return invoiceDAO.findAll();
+        return invoiceDAO.findByAdmin(adminService.getCurrentAdmin());
     }
 
     public List<Invoice> getAllInvoicesByAdmin(Admin admin) {
@@ -96,7 +97,8 @@ public class InvoiceService {
         invoice.setDate(invoiceDate);
         invoice.setTotalAmount(0.0);
         Double totalAmount = 0.0;
-
+        List<Invoice> invoices = getAllInvoices();
+        invoice.setAdminRefId((long) (invoices.size() + 1));
         for (InvoiceItem item : invoiceItems) {
             Product product = productDAO.findById(item.getProduct().getId())
                     .orElseThrow(() -> new RuntimeException("Product not found"));

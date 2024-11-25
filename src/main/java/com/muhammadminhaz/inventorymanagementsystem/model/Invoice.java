@@ -41,6 +41,17 @@ public class Invoice {
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<InvoiceItem> invoiceItems = new ArrayList<>();
 
+    @Column(name = "admin_ref_id")
+    private Long adminRefId;
+
+    public Long getAdminRefId() {
+        return adminRefId;
+    }
+
+    public void setAdminRefId(Long adminRefId) {
+        this.adminRefId = adminRefId;
+    }
+
     public List<InvoiceItem> getInvoiceItems() {
         return invoiceItems;
     }
