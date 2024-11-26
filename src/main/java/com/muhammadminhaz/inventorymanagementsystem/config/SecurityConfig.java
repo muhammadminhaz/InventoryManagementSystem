@@ -23,6 +23,7 @@ public class SecurityConfig {
                         .loginPage("/")
                         .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/dashboard", true)
+                        .failureUrl("/?error=true")
                         .permitAll()
                 )
                 .logout(logout -> logout.permitAll());

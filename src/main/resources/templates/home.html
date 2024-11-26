@@ -36,6 +36,9 @@
                     <h3>Admin Login</h3>
                 </div>
                 <div class="card-body">
+                    <div class="alert alert-danger" th:if="${param.error}" role="alert">
+                        Invalid username or password. Please try again.
+                    </div>
                     <form action="/login" method="post">
                         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                         <div class="form-group">
