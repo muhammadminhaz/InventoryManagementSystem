@@ -35,7 +35,7 @@ public class SignupController {
     public String processSignup(@ModelAttribute Admin admin) {
         try {
             adminService.signUp(admin);
-            return "redirect:/profile";
+            return "redirect:/";
         } catch (IllegalArgumentException e) {
             return "redirect:/signup?error=" + e.getMessage();
         }

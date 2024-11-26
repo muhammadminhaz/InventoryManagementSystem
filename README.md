@@ -4,6 +4,7 @@ This is a Spring Boot-based Inventory Management System which is created to mana
 
 ## Features
 
+* Admin Login: Signup, Login functionalities with Spring Security
 * Product Management: Add, update, delete, and list products.
 * Inventory Tracking: View Product stocks.
 * Sales Management: Analytics on sales.
@@ -11,11 +12,14 @@ This is a Spring Boot-based Inventory Management System which is created to mana
 
 ## Screenshots
 ![Dashboard](screenshots/dashboard.png)
-![Invoice Details](screenshots/invoice%20details.png)
-![Products](screenshots/product%20list.png)
-![Invoices](screenshots/invoice%20list.png)
-![Create Invoice](screenshots/add%20invoice.png)
-![Create Product](screenshots/add%20product.png)
+![Admin Login](screenshots/admin_login.png)
+![Admin Profile](screenshots/admin_profile.png)
+![Create Product](screenshots/add_product.png)
+![Products](screenshots/product_list.png)
+![Create Invoice](screenshots/add_invoice.png)
+![Invoice Details](screenshots/invoice_details.png)
+![Print Invoice](screenshots/print_invoice.png)
+![Invoices](screenshots/invoice_list.png)
 
 ## Tech Stack
 
