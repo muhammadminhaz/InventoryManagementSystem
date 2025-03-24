@@ -122,8 +122,9 @@
                         <thead>
                         <tr>
                             <th style="width: 20%;">Select Product</th>
-                            <th style="width: 10%;">Quantity</th>
-                            <th style="width: 15%;">Print Type</th>
+                            <th style="width: 10%;">Serial No.</th>
+                            <th style="width: 5%;">Quantity</th>
+                            <th style="width: 10%;">Print Type</th>
                             <th style="width: 10%;">Sides</th>
                             <th style="width: 10%;">Adjusted Price</th>
                             <th style="width: 10%;">Final Price</th>
@@ -141,6 +142,9 @@
                                             th:data-price="${product.price}">
                                     </option>
                                 </select>
+                            </td>
+                            <td colspan="1">
+                                <input type="text" class="form-control serialNumber" name="invoiceItems[0].serialNumber">
                             </td>
                             <td colspan="1">
                                 <input type="number" class="form-control quantity" name="invoiceItems[0].quantity"

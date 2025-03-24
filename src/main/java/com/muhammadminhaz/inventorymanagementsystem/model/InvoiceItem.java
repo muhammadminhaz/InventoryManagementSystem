@@ -21,6 +21,16 @@ public class InvoiceItem {
     private Double adjustedPrice;
     @Column(name = "printed_side")
     private Integer printedSide;
+    @Column(name = "serial_number", nullable = false)
+    private String serialNumber = "N/A";
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
 
     public String getPrintType() {
         return printType;

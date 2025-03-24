@@ -165,7 +165,8 @@
                 <div class="col-md-6 text-right" style="padding-left: 5px;">
                     <h5 style="font-size: 1.3rem;">Invoice Details</h5>
                     <p style="margin: 5px;"><strong>Invoice Date:</strong> <span th:text="${formattedDate}"></span></p>
-                    <p style="margin: 5px;"><strong>Invoice Number:</strong> #<span th:text="${invoice.adminRefId}"></span></p>
+                    <p style="margin: 5px;"><strong>Invoice Number:</strong> #<span
+                            th:text="${invoice.adminRefId}"></span></p>
                 </div>
             </div>
 
@@ -1005,6 +1006,7 @@
                 <div>
                     <strong>${item.productName}</strong>
                     <p>Desc: ${item.productDesc}</p>
+                    <p>Serial: ${item.productSerialNumber}</p>
                     <p>Color: ${item.productColour}</p>
                     <p>Size: ${item.productSize}</p>
                     <p>Print Type: ${item.productPrintType}</p>

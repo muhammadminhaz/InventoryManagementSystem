@@ -114,6 +114,7 @@ public class InvoiceController {
                         Map<String, Object> itemMap = new HashMap<>();
                         itemMap.put("productName", invoiceItem.getProduct().getName());
                         itemMap.put("productDesc", invoiceItem.getProduct().getDescription());
+                        itemMap.put("productSerialNumber", invoiceItem.getSerialNumber());
                         itemMap.put("productColour", invoiceItem.getProduct().getColour());
                         itemMap.put("productSize", invoiceItem.getProduct().getSize());
                         itemMap.put("productPrintType", invoiceItem.getPrintType());

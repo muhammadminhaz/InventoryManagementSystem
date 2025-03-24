@@ -110,6 +110,7 @@ public class InvoiceService {
                 invoiceItem.setCustomized(true);
             }
             invoiceItem.setPrintedSide(item.getPrintedSide());
+            invoiceItem.setSerialNumber(item.getSerialNumber());
             invoiceItem.setPrintType(item.getPrintType());
             invoiceItem.setAdjustedPrice(item.getAdjustedPrice());
             product.setQuantity(product.getQuantity() - item.getQuantity());
